@@ -1,16 +1,25 @@
-import React from 'react';
+import React,{useState} from 'react';
+import './styles.css'
+import Toolbar from '../Navigation/Toolbar/Toolbar'
+import SideDrawer from '../Navigation/SideDrawer/SideDrawer'
 
+function Layout(props) {
+  
+  const [showSideD,setShowSideD]=useState(false)
 
-export default function layout(props) {
+  const sideDrawerClosedHandler = (value) => {
+    setShowSideD(value)
+  }
+
   return (
-    <div>
-        <div>
-            Toolbar, SideDrawer, 
-        </div>
-        <main>
+    <>
+        <Toolbar show={() => sideDrawerClosedHandler(true)}/>
+        <SideDrawer closed={() => sideDrawerClosedHandler(false)} show={showSideD}/>
+        <main className="main-content">
             {props.children}
         </main>
-    </div>
+    </>
   );
 }
 
+export default Layout;
