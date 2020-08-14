@@ -4,8 +4,11 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/UI/Modal/modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import './styles.css'
+import axios from '../../axios-order'
+import Spinner from '../../components/UI/Spinner/Spinner'
+import withErrorHandler from '../../hoc/withErrorHandler'
 
-export default function BurgerBuilder() {
+function BurgerBuilder() {
 
   const ingredient_prices = {
     Salad: 2.5,
@@ -22,7 +25,8 @@ export default function BurgerBuilder() {
       Bacon:0
     },
     totalPrice:4,
-    purchasing:false
+    purchasing:false,
+    loading:false
   })
 
   const addIngredientHandler = (type) => {
@@ -57,6 +61,31 @@ export default function BurgerBuilder() {
     })
   }
 
+  const PurchasingContinueHandler = ()=> {
+    setBuilder({ingredients:builder.ingredients,
+                totalPrice:builder.totalPrice,
+                purchasing:builder.purchasing,
+                loading: true
+              })
+    const orders= {
+      total_price: builder.totalPrice.toFixed(2),
+      date_creation: new Date(),
+      ingredients:builder.ingredients
+    }
+    axios.post('/orders',orders)
+         .then(CloseSummaryAndLoader)
+         .catch(CloseSummaryAndLoader)
+  }
+
+  const CloseSummaryAndLoader = () => {
+    setBuilder({
+      ingredients:builder.ingredients,
+      totalPrice: builder.totalPrice,
+      purchasing: false,
+      loading:    false
+    })
+  }
+
   const disableButton={
     ...builder.ingredients
   }
@@ -65,16 +94,21 @@ export default function BurgerBuilder() {
     disableButton[key] = disableButton[key] <= 0
   }
 
+  let SummaryOrLoader = (<OrderSummary 
+                          ingredients={builder.ingredients}
+                          close={showOrCloseSummary}
+                          continue={PurchasingContinueHandler}
+                          totalPrice={builder.totalPrice.toFixed(2)}
+                        />)
+
+  if (builder.loading){
+    SummaryOrLoader=<Spinner/>
+  }
   return (
       <>
       {builder.purchasing && 
-        <Modal close={showOrCloseSummary}>
-          <OrderSummary 
-            ingredients={builder.ingredients}
-            close={showOrCloseSummary}
-            continue={()=> alert('PROCESSANDO COMPRA...')}
-            totalPrice={builder.totalPrice.toFixed(2)}
-          />
+        <Modal close={showOrCloseSummary} show={true}>
+          {SummaryOrLoader}
         </Modal>
       }
         <Burger ingredients={builder.ingredients}/>
@@ -89,3 +123,4 @@ export default function BurgerBuilder() {
   );
 }
 
+export default withErrorHandler(BurgerBuilder, axios)
