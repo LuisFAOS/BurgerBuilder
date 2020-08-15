@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles.css'
 import BurgerIngredient from './BurgerIngredients/BurgerIngredient'
+import {withRouter} from 'react-router-dom'
 
 function Burger(props) {
 
@@ -17,7 +18,6 @@ function Burger(props) {
                             );
                         });
         });
-
     return (
         <div className="Burger">
             <BurgerIngredient type="BreadTop"/>
@@ -27,4 +27,4 @@ function Burger(props) {
     );
 }
 
-export default Burger;
+export default withRouter(Burger);

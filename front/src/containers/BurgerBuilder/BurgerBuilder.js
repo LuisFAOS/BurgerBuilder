@@ -8,7 +8,7 @@ import axios from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/withErrorHandler'
 
-function BurgerBuilder() {
+function BurgerBuilder(props) {
 
   const ingredient_prices = {
     Salad: 2.5,
@@ -28,6 +28,7 @@ function BurgerBuilder() {
     purchasing:false,
     loading:false
   })
+
 
   const addIngredientHandler = (type) => {
     const updatedIngredients = {
@@ -67,24 +68,12 @@ function BurgerBuilder() {
                 purchasing:builder.purchasing,
                 loading: true
               })
-    const orders= {
-      total_price: builder.totalPrice.toFixed(2),
-      date_creation: new Date(),
-      ingredients:builder.ingredients
-    }
-    axios.post('/orders',orders)
-         .then(CloseSummaryAndLoader)
-         .catch(CloseSummaryAndLoader)
+    localStorage.setItem('ingredients',JSON.stringify(builder.ingredients))
+    localStorage.setItem('totalPrice',JSON.stringify(builder.totalPrice.toFixed(2)))
+    props.history.push('/checkout')
   }
 
-  const CloseSummaryAndLoader = () => {
-    setBuilder({
-      ingredients:builder.ingredients,
-      totalPrice: builder.totalPrice,
-      purchasing: false,
-      loading:    false
-    })
-  }
+
 
   const disableButton={
     ...builder.ingredients
