@@ -6,7 +6,6 @@ import ContactData from './ContactData/ContactData'
 function Checkout(props) {
 
     const checkoutContinueHandler=()=>{
-        window.scrollTo(0,1000)
         props.history.replace('/checkout/data-input')
     } 
     if(!(localStorage.getItem('ingredients') && localStorage.getItem('totalPrice'))){
