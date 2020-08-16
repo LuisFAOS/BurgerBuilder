@@ -69,7 +69,7 @@ function BurgerBuilder(props) {
                 loading: true
               })
     localStorage.setItem('ingredients',JSON.stringify(builder.ingredients))
-    localStorage.setItem('totalPrice',JSON.stringify(builder.totalPrice.toFixed(2)))
+    localStorage.setItem('totalPrice',builder.totalPrice.toFixed(2))
     props.history.push('/checkout')
   }
 
