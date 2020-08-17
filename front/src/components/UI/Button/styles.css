@@ -22,3 +22,8 @@
 .Danger {
     color: #944317;
 }
+
+button.Button.Success:disabled {
+    color: #646b5a!important;
+    cursor: auto;
+}

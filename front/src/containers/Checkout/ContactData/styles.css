@@ -3,7 +3,17 @@
     flex-direction: column;
     width:50%;
     margin: 15px auto;
+}
+
+.contentForm h2 {
     text-align: center;
+}
+.error{
+    font-size: 11px;
+    color: crimson;
+    margin: 0;
+    padding: 0px 2px;
+    padding-bottom: 10px;
 }
 
 .itemData{
@@ -15,4 +25,8 @@
     .contentForm{
         width:33%;
     }
+}
+
+ErrorMessage {
+
 }

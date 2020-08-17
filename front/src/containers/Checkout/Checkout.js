@@ -1,7 +1,5 @@
 import React from 'react';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
-import {Route} from 'react-router-dom'
-import ContactData from './ContactData/ContactData'
 
 function Checkout(props) {
 
@@ -16,7 +14,6 @@ function Checkout(props) {
         return (
                 <>
                     <CheckoutSummary checkoutContinue={checkoutContinueHandler}/>
-                    <Route path='/checkout/data-input' component={ContactData}/>
                 </>);
     }
 }
