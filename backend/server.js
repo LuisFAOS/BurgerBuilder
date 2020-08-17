@@ -24,10 +24,11 @@ app.post('/ingredients', async (req, res)=> {
     try {
         const ingredients=JSON.parse(req.body.ingredients)
         const last_id=await database('orders').max('id_burger as id') 
-        Object.keys(ingredients).forEach(async (name, amount) => {
+        Object.entries(ingredients).forEach(async value => {
+            
             await database('ingredients').insert({
-                name,
-                amount,
+                name: value[0],
+                amount: value[1],
                 id_burger: last_id[0].id})
         })
         res.sendStatus(200)
@@ -58,7 +59,7 @@ app.get('/orders', async (_, res)=> {
             ingredients.forEach(ingre => {
                 select[i].ingredients.push({[ingre.name]:ingre.amount})
             })
-            if(select.length-1 == i) res.send(select)
+            if(select.length-1 == i) res.send(select); 
         })       
     } catch (e) {
         res.send("Detectamos um erro na rota get orders!! Erro: ",e)

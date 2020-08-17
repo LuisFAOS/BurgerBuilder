@@ -6,7 +6,6 @@ import {withRouter} from 'react-router-dom'
 
 
 function CheckoutSummary(props){
-
   
     return (
         <div className="CheckoutSummary">
