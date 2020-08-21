@@ -4,18 +4,15 @@ import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSumm
 function Checkout(props) {
 
     const checkoutContinueHandler=()=>{
+        setTimeout(()=>window.scrollTo(0,1000),100)
         props.history.replace('/checkout/data-input')
     } 
-    if(!(localStorage.getItem('ingredients') && localStorage.getItem('totalPrice'))){
-        props.history.push('/')
-        return null
-    }
-    else {
-        return (
-                <>
-                    <CheckoutSummary checkoutContinue={checkoutContinueHandler}/>
-                </>);
-    }
-}
 
+    return (
+            <>
+                <CheckoutSummary checkoutContinue={checkoutContinueHandler}/>
+            </>
+    );
+}
+  
 export default Checkout;

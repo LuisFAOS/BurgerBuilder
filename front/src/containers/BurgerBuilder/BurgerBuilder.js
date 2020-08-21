@@ -7,76 +7,34 @@ import './styles.css'
 import axios from '../../axios-order'
 import Spinner from '../../components/UI/Spinner/Spinner'
 import withErrorHandler from '../../hoc/withErrorHandler'
+import { connect } from 'react-redux'
+
 
 function BurgerBuilder(props) {
 
-  const ingredient_prices = {
-    Salad: 2.5,
-    Cheese: 3.4,
-    Meat: 2.3,
-    Bacon: 1.7
-  };
-
-  const [builder,setBuilder]=useState({
-    ingredients:{
-      Salad:0,
-      Cheese:0,
-      Meat:0,
-      Bacon:0
-    },
-    totalPrice:4,
+  const [funcs,setFuncs]=useState({
     purchasing:false,
     loading:false
   })
 
-
-  const addIngredientHandler = (type) => {
-    const updatedIngredients = {
-      ...builder.ingredients
-    }
-    updatedIngredients[type]+=1
-    const newPrice = ingredient_prices[type] + builder.totalPrice
-    setBuilder({ingredients:updatedIngredients, totalPrice:newPrice})
-  }
-
-  const removeIngredientHandler = (type) => {
-    
-    if (builder.ingredients[type] > 0) {
-      
-      const updatedIngredients = {
-        ...builder.ingredients
-      }
-
-      updatedIngredients[type]-=1
-      const newPrice = builder.totalPrice - ingredient_prices[type]
-      setBuilder({ingredients:updatedIngredients, totalPrice:newPrice})
-    }
-
-  }
-
   const showOrCloseSummary = ()=>{
-    setBuilder({
-      ingredients:builder.ingredients,
-      totalPrice:builder.totalPrice,
-      purchasing:builder.purchasing ? false:true
+    setFuncs({
+      purchasing:funcs.purchasing ? false:true
     })
   }
 
   const PurchasingContinueHandler = ()=> {
-    setBuilder({ingredients:builder.ingredients,
-                totalPrice:builder.totalPrice,
-                purchasing:builder.purchasing,
-                loading: true
-              })
-    localStorage.setItem('ingredients',JSON.stringify(builder.ingredients))
-    localStorage.setItem('totalPrice',builder.totalPrice.toFixed(2))
+    setFuncs({
+      purchasing:funcs.purchasing,
+      loading: true
+    })
     props.history.push('/checkout')
   }
 
 
 
   const disableButton={
-    ...builder.ingredients
+    ...props.ingredients
   }
 
   for (const key in disableButton) {
@@ -84,27 +42,27 @@ function BurgerBuilder(props) {
   }
 
   let SummaryOrLoader = (<OrderSummary 
-                          ingredients={builder.ingredients}
+                          ingredients={props.ingredients}
                           close={showOrCloseSummary}
                           continue={PurchasingContinueHandler}
-                          totalPrice={builder.totalPrice.toFixed(2)}
+                          totalPrice={props.totalPrice}
                         />)
 
-  if (builder.loading){
+  if (funcs.loading){
     SummaryOrLoader=<Spinner/>
   }
   return (
       <>
-      {builder.purchasing && 
+      {funcs.purchasing && 
         <Modal close={showOrCloseSummary} show={true}>
           {SummaryOrLoader}
         </Modal>
       }
-        <Burger ingredients={builder.ingredients}/>
+        <Burger ingredients={props.ingredients}/>
         <BuildControls 
-          price={builder.totalPrice.toFixed(2)}
-          IngredientAdded={addIngredientHandler}
-          IngredientRemoved={removeIngredientHandler}
+          price={props.totalPrice}
+          IngredientAdded={props.onAddIngredient}
+          IngredientRemoved={props.onRemoveIngredient}
           disabled={disableButton}
           show={showOrCloseSummary}
         />
@@ -112,4 +70,18 @@ function BurgerBuilder(props) {
   );
 }
 
-export default withErrorHandler(BurgerBuilder, axios)
+const mapStateToProps = state => {
+  return {
+    ingredients:state.ingredients,
+    totalPrice: state.totalPrice.toFixed(2)
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onAddIngredient: ingredientName => dispatch({type:'ADD_INGREDIENTS', ingredient: ingredientName}),
+    onRemoveIngredient: ingredientName => dispatch({type:'REMOVE_INGREDIENTS', ingredient: ingredientName})
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(BurgerBuilder, axios))

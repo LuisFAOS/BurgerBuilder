@@ -14,15 +14,15 @@ app.post('/orders', async (req, res)=> {
     try{
         const {total_price, date_creation}=req.body
         await database('orders').insert({total_price, date_creation})
-        res.sendStatus(200)
+        res.sendStatus(200).send('Dados inseridos com sucesso!!')
     }catch (e) {
-        res.send("Detectamos um erro na rota post orders!! Erro: ",e)
+        res.sendStatus(500).send("Detectamos um erro na rota post orders!! Erro: ",e)
     }
 })
 
 app.post('/ingredients', async (req, res)=> {
     try {
-        const ingredients=JSON.parse(req.body.ingredients)
+        const ingredients=req.body
         const last_id=await database('orders').max('id_burger as id') 
         Object.entries(ingredients).forEach(async value => {
             
@@ -31,9 +31,9 @@ app.post('/ingredients', async (req, res)=> {
                 amount: value[1],
                 id_burger: last_id[0].id})
         })
-        res.sendStatus(200)
+        res.sendStatus(200).send('Dados inseridos com sucesso!!')
     } catch (e) {
-        res.send("Detectamos um erro na rota post ingredients!! Erro: ",e)
+        res.sendStatus(500).send("Detectamos um erro na rota post ingredients!! Erro: ",e)
     }
     
 })
@@ -42,9 +42,9 @@ app.post('/buyers', async (req, res)=> {
     try {
         const {name, email, street, cep}=req.body
         await database('buyers').insert({name, email, street, cep})
-        res.sendStatus(200)
+        res.sendStatus(200).send('Dados inseridos com sucesso!!')
     } catch (e) {
-        res.send("Detectamos um erro na rota post buyers!! Erro: ",e)
+        res.sendStatus(500).send("Detectamos um erro na rota post buyers!! Erro: ",e)
     }
     
 })
@@ -62,7 +62,7 @@ app.get('/orders', async (_, res)=> {
             if(select.length-1 == i) res.send(select); 
         })       
     } catch (e) {
-        res.send("Detectamos um erro na rota get orders!! Erro: ",e)
+        res.sendStatus(500).send("Detectamos um erro na rota get orders!! Erro: ",e)
     }
 })
 
@@ -71,7 +71,7 @@ app.get('/buyers', async (_, res)=> {
         const buyers = await database('buyers').select('name','email')
         res.send(buyers)
     } catch (e) {
-        res.send("Detectamos um erro na rota get buyers!! Erro: ",e)
+        res.sendStatus(500).send("Detectamos um erro na rota get buyers!! Erro: ",e)
     }
 })
 

@@ -6,6 +6,7 @@ import Spinner from '../../../components/UI/Spinner/Spinner'
 import {withRouter} from 'react-router-dom'
 import {Formik, Form, Field, ErrorMessage} from 'formik'
 import schema from '../../../yup'
+import { connect } from 'react-redux'
 
 function ContactData(props) {
 
@@ -13,24 +14,18 @@ function ContactData(props) {
 
 
     const onSubmit = async (values)=>{
-        if(!(localStorage.getItem('ingredients') && localStorage.getItem('totalPrice'))){
-            props.history.push('/')
-        }else{
-            setLoading(true)
-            const orders= {
-                total_price: localStorage.getItem('totalPrice'),
-                date_creation: new Date(),
-            }
-            const ingredients = {ingredients:localStorage.getItem('ingredients')}
-            const buyer = values
-
-            await axios.post('/orders',orders)
-            await axios.post('/ingredients',ingredients)
-            await axios.post('/buyers',buyer)
-            localStorage.removeItem('ingredients')
-            localStorage.removeItem('totalPrice')
-            props.history.push('/')
+        setLoading(true)
+        const orders= {
+            total_price: props.totalPrice,
+            date_creation: new Date(),
         }
+        const buyer = values
+
+        await axios.post('/orders',orders)
+        await axios.post('/ingredients',props.ingredients)
+        await axios.post('/buyers',buyer)
+        props.onResetIngredients()
+        props.history.push('/') 
     }
 
         return(loading ? <Spinner/>:
@@ -40,7 +35,7 @@ function ContactData(props) {
                 validateOnMount
                 initialValues={{name:'',email:'',street:'',postalcode:''}}>
 
-                {({values, errors,touched, isValid})=>(
+                {({v, errors,t, isValid})=>(
                     <Form className="contentForm">
                         <h2>Enter with yours data</h2>
                                 <Field className="itemData" name='name' placeholder='Name'/>
@@ -58,4 +53,17 @@ function ContactData(props) {
                     </Form>)}
             </Formik>)
 }
-export default withRouter(ContactData);
+
+const mapStateToProps = state => {
+    return {
+      ingredients:state.ingredients,
+      totalPrice: state.totalPrice
+    }
+}
+
+const mapDispatchToProps = dispacth => {
+    return {
+      onResetIngredients: () => dispacth({type: 'RESET_INGREDIENTS'})
+    }
+}  
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContactData));

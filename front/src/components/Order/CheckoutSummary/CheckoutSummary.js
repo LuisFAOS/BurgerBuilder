@@ -1,11 +1,13 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import './styles.css'
 import Burger from '../../Burger/Burger'
 import Button from '../../UI/Button/Button'
-import {withRouter} from 'react-router-dom'
-
 
 function CheckoutSummary(props){
+
   
     return (
         <div className="CheckoutSummary">
@@ -13,7 +15,7 @@ function CheckoutSummary(props){
                 Thank's to use our services!! 
                 <br/>That's your burger!
             </h1>
-            <Burger ingredients={JSON.parse(localStorage.getItem('ingredients'))}/>
+            <Burger ingredients={props.ingredients}/>
             <Button btnType="Danger" clicked={()=> props.history.push("/")}>
                 Cancel
             </Button>
@@ -24,5 +26,11 @@ function CheckoutSummary(props){
     );
 }
 
+const mapStateToProps = state => {
+    return {
+      ingredients:state.ingredients,
+      totalPrice:state.totalPrice
+    }
+}  
 
-export default withRouter(CheckoutSummary)
+export default connect(mapStateToProps)(withRouter(CheckoutSummary))

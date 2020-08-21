@@ -14,21 +14,19 @@ function Orders() {
             .then(value =>  setOrders(value.data))
     },[])
 
-    const renderIngredients = (ingredients)=>{
-        return ingredients.map(ingre => {
-            return Object.entries(ingre).map(value=> {
-                return (<span className="ingredient" 
-                        key={value[0]}>  {value[0]}({value[1]})  </span>)
-            })
-        })
-    }
-
         return ( buyers && orders ?
             orders.map((value, i) => <div className="card" key={i}>
                                         <div className="item">Buyer name: {buyers[i].name}</div>
-                                        <div className="item">Email: {buyers[i].name}</div>
+                                        <div className="item">Email: {buyers[i].email}</div>
                                         <div className="item ingredients">Burger ingredients:                                       
-                                            {()=> <div>{renderIngredients(value.ingredients)}</div>}
+                                            {
+                                                value.ingredients.map(ingre => {
+                                                    return Object.entries(ingre).map(value=> {
+                                                        return (<span className="ingredient" 
+                                                                key={value[0]}>  {value[0]}({value[1]})  </span>)
+                                                    })
+                                                })
+                                            }
                                         </div>
                                         <div className="item">Total price: R${value.total_price}</div>
                                         <div className="item">Date creation: {new Date(value.date_creation).toLocaleString()}</div>
