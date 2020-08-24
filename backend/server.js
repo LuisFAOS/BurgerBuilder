@@ -1,9 +1,13 @@
 const express= require('express')
 const app= express()
 const bodyparser= require('body-parser')
-const database= require('./database/connection')
-const port= process.env.PORT || 5000
 const cors= require('cors')
+const JWT= require('jsonwebtoken')
+const JWTkey='444testand0JWT888'
+
+const port= process.env.PORT || 5000
+const database= require('./database/connection')
+
 
 app.use(cors())
 app.use(bodyparser.urlencoded({extended: false}))
@@ -48,6 +52,27 @@ app.post('/buyers', async (req, res)=> {
     }
     
 })
+
+app.post('/users', async (req, res)=> {
+    try {
+        const {email, password}=req.body
+        const result=await database('user').select('email','password').where({email, password})
+        
+        result.length > 0 ? 
+            JWT.sign({}, JWTkey, {expiresIn:'24h'},(err,tkn)=> {
+                res.status(200).send({
+                    email:result[0].email,
+                    password:result[0].password,
+                    token: err ? err : tkn
+                }) 
+            })
+            : res.status(200).send('No user found')
+    } catch (e) {
+        res.status(500).send("Detectamos um erro na rota post buyers!! Erro: ",e)
+    }
+    
+})
+
 
 //busca de dados
 app.get('/orders', async (_, res)=> {
