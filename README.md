@@ -8,6 +8,7 @@ skills like:
 - API consumption
 - React route
 - Forms manipulation
+- Redux
 - and More
 
 # *To run it:*
