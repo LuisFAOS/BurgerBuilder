@@ -58,6 +58,7 @@ app.post('/users', async (req, res)=> {
         const {email, password}=req.body
         const result=await database('user').select('email','password').where({email, password})
         
+
         result.length > 0 ? 
             JWT.sign({}, JWTkey, {expiresIn:'24h'},(err,tkn)=> {
                 res.status(200).send({
@@ -68,7 +69,7 @@ app.post('/users', async (req, res)=> {
             })
             : res.status(200).send('No user found')
     } catch (e) {
-        res.status(500).send("Detectamos um erro na rota post buyers!! Erro: ",e)
+        res.status(500).send("Detectamos um erro na rota post users!! Erro: ",e)
     }
     
 })
