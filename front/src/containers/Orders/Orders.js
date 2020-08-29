@@ -23,7 +23,9 @@ function Orders() {
                                                 value.ingredients.map(ingre => {
                                                     return Object.entries(ingre).map(value=> {
                                                         return (<span className="ingredient" 
-                                                                key={value[0]}>  {value[0]}({value[1]})  </span>)
+                                                                 key={value[0]}>  
+                                                                        {value[0]}({value[1]})  
+                                                                </span>)
                                                     })
                                                 })
                                             }

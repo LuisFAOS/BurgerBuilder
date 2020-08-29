@@ -72,8 +72,8 @@ function BurgerBuilder(props) {
 
 const mapStateToProps = state => {
   return {
-    ingredients:state.ingredients,
-    totalPrice: state.totalPrice.toFixed(2)
+    ingredients:state.ingredientsReducer.ingredients,
+    totalPrice: state.ingredientsReducer.totalPrice.toFixed(2)
   }
 }
 

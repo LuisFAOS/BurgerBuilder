@@ -5,7 +5,7 @@ import axios from '../../../axios-order'
 import Spinner from '../../../components/UI/Spinner/Spinner'
 import {withRouter} from 'react-router-dom'
 import {Formik, Form, Field, ErrorMessage} from 'formik'
-import schema from '../../../yup'
+import schema from '../../../yupSchemas/schemaContact'
 import { connect } from 'react-redux'
 
 function ContactData(props) {
@@ -27,7 +27,7 @@ function ContactData(props) {
         props.onResetIngredients()
         props.history.push('/') 
     }
-
+    
         return(loading ? <Spinner/>:
             <Formik
                 validationSchema={schema}
@@ -56,8 +56,8 @@ function ContactData(props) {
 
 const mapStateToProps = state => {
     return {
-      ingredients:state.ingredients,
-      totalPrice: state.totalPrice
+      ingredients:state.ingredientsReducer.ingredients,
+      totalPrice: state.ingredientsReducer.totalPrice
     }
 }
 
